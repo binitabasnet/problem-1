@@ -1,9 +1,9 @@
 import { useReducer, createContext } from "react";
 
-// Define available colors
+// available colors
 const colors = ["red", "green", "blue", "black", "orange"];
 
-// Define reducer function
+// reducer function
 const colorReducer = (state, action) => {
   switch (action.type) {
     case "CHANGE_COLOR": {
@@ -23,7 +23,7 @@ const colorReducer = (state, action) => {
   }
 };
 
-// Create context
+// context
 const ColorContext = createContext();
 
 // App component
@@ -46,7 +46,15 @@ const App = () => {
         >
           Change Color
         </button>
-        <p>{colorState.colorHistory.join(", ")}</p>
+
+        <p>
+          <span
+            key={colorState.currentColor}
+            style={{ color: colorState.currentColor }}
+          >
+            {colorState.colorHistory.join(", ")}
+          </span>
+        </p>
       </div>
     </ColorContext.Provider>
   );
