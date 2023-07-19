@@ -1,35 +1,55 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useReducer, createContext } from "react";
 
-function App() {
-  const [count, setCount] = useState(0)
+// Define available colors
+const colors = ["red", "green", "blue", "black", "orange"];
+
+// Define reducer function
+const colorReducer = (state, action) => {
+  switch (action.type) {
+    case "CHANGE_COLOR": {
+      const prevColor = state.currentColor;
+      const nextColor =
+        prevColor === "blue"
+          ? "green"
+          : colors[Math.floor(Math.random() * colors.length)];
+      return {
+        currentColor: nextColor,
+        colorHistory: [...state.colorHistory, nextColor],
+      };
+    }
+
+    default:
+      return state;
+  }
+};
+
+// Create context
+const ColorContext = createContext();
+
+// App component
+const App = () => {
+  const [colorState, dispatch] = useReducer(colorReducer, {
+    currentColor: "blue",
+    colorHistory: [],
+  });
+
+  const handleChangeColor = () => {
+    dispatch({ type: "CHANGE_COLOR" });
+  };
 
   return (
-    <>
+    <ColorContext.Provider value={colorState}>
       <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
+        <button
+          style={{ backgroundColor: colorState.currentColor }}
+          onClick={handleChangeColor}
+        >
+          Change Color
         </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
+        <p>{colorState.colorHistory.join(", ")}</p>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    </ColorContext.Provider>
+  );
+};
 
-export default App
+export default App;
